@@ -22,5 +22,8 @@ public class Vect2D {
 		this.y += accel.y;
 	}
 	
+	public double distSigned(Vect2D vect) {
+		
+	}
 	
 }
