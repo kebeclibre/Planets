@@ -36,11 +36,11 @@ public class Vect2D {
 		this.y -= vect.getY();
 	}
 	
-	public Vect2D relativeDistTo(Vect2D vect) throws DivByZeroException {
-		double distX = vect.getX() - this.x;
+	public Vect2D relativeDistTo(Vect2D vect) {
+		double distX = vect.getX()-this.x;
 		double distY = vect.getY() - this.y;
 		
-		if (distX == 0 && distY == 0) throw new DivByZeroException();
+	
 		Vect2D res = new Vect2D(distX,distY);
 		return res;
 	}
@@ -75,19 +75,6 @@ public class Vect2D {
 		double tempX = temp.getX();
 		double tempY = temp.getY();		
 		return tempX*tempX + tempY*tempY;
-	}
-	
-	public Vect2D composeXY(double hypoSquared) {
-		double tempX = this.getX();
-		double tempY = this.getY();
-		double angle = Math.atan2(tempY,tempX);
-
-		double aX = hypoSquared*Math.cos(angle);
-		double aY = hypoSquared*Math.sin(angle);
-		//System.out.println(aY);
-		Vect2D ret = new Vect2D(aX,aY);
-		//System.out.println(ret);
-		return ret;
 	}
 	
 	public String toString() {

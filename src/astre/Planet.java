@@ -11,8 +11,7 @@ public class Planet implements Gravitable<Planet> {
 	private Vect2D vitesse = new Vect2D();
 	private int weigh;
 	private int radius;
-	private final Vect2D accel = new Vect2D();
-	private Vect2D newAccel = new Vect2D();
+	private Vect2D accel = new Vect2D();
 	
 	
 	
@@ -65,6 +64,7 @@ public class Planet implements Gravitable<Planet> {
 	
 	public void updatePosition() {
 		this.position.addVectAccel(vitesse);
+		
 	}
 	
 	public void updateVitess() {
@@ -73,24 +73,31 @@ public class Planet implements Gravitable<Planet> {
 	
 	@Override
 	public void mutualAttract(Planet p) {
-		Vect2D dist = null;
-		double hypo = 0;
-		try {
-			dist = this.position.relativeDistTo(p.position);
-			hypo = Math.hypot(dist.getX(), dist.getY());			
-		} catch (DivByZeroException e) {
-			hypo = 1;
-			dist = new Vect2D(0,0);
-		}
-		double force = GRAV * this.getWeigh()*p.getWeigh() / hypo;
-		newAccel = dist.composeXY(force);
-		accel.setX(newAccel.getX());
-		accel.setY(newAccel.getY());
+		Vect2D dVect = null;
+
+		dVect = this.position.relativeDistTo(p.position);
+	
+		double hypo = Math.hypot(dVect.getX(),dVect.getY());
+		double invHypo = 1.0 / hypo;
+		double forceG = GRAV * invHypo;
+		
+		int directionX = (dVect.getX()) < 0 ? -1:1;
+		int directionY = (dVect.getY()) < 0 ? -1:1;
+		
+		double selfXA = forceG * p.getWeigh() * dVect.getX() * invHypo;
+		double selfYA = forceG * p.getWeigh() * dVect.getY() * invHypo;
+		
+		double otherXA = - forceG * this.getWeigh()* dVect.getX() * invHypo;
+		double otherYA = - forceG * this.getWeigh()* dVect.getY() * invHypo;
+		
+		this.accel = new Vect2D(selfXA,selfYA);
+		p.accel = new Vect2D(otherXA,otherYA);
+		
 		this.updateVitess();
 		this.updatePosition();
-		//System.out.println(vitesse);
 		
-		
+		p.updateVitess();
+		p.updatePosition();
 	}
 	
 	public String toString() {
