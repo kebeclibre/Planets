@@ -2,12 +2,24 @@ package astre;
 
 import astre.iface.Gravitable;
 import coord.Vect2D;
+import coord.except.DivByZeroException;
 
-public class Planet implements Gravitable {
+import static universe.Omega.GRAV;
+
+public class Planet implements Gravitable<Planet> {
 	private Vect2D position = new Vect2D();
 	private Vect2D vitesse = new Vect2D();
 	private int weigh;
 	private int radius;
+	private final Vect2D accel = new Vect2D();
+	private Vect2D newAccel = new Vect2D();
+	
+	
+	
+	public Planet(int weigh, double x, double y) {
+		this.weigh = weigh;
+		this.setPosition(x, y);
+	}
 	
 	public Vect2D getPosition() {
 		return position;
@@ -53,6 +65,40 @@ public class Planet implements Gravitable {
 	
 	public void updatePosition() {
 		this.position.addVectAccel(vitesse);
+	}
+	
+	public void updateVitess() {
+		this.vitesse.addVectAccel(accel);
+	}
+	
+	@Override
+	public void mutualAttract(Planet p) {
+		Vect2D dist = null;
+		double hypo = 0;
+		try {
+			dist = this.position.relativeDistTo(p.position);
+			hypo = Math.hypot(dist.getX(), dist.getY());			
+		} catch (DivByZeroException e) {
+			hypo = 1;
+			dist = new Vect2D(0,0);
+		}
+		double force = GRAV * this.getWeigh()*p.getWeigh() / hypo;
+		newAccel = dist.composeXY(force);
+		accel.setX(newAccel.getX());
+		accel.setY(newAccel.getY());
+		this.updateVitess();
+		this.updatePosition();
+		//System.out.println(vitesse);
+		
+		
+	}
+	
+	public String toString() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("planet--");
+		sb.append("weigh: "+weigh+" -- ");
+		sb.append("position: "+position.toString()+" -- ");
+		return sb.toString();
 	}
 	
 	
