@@ -6,7 +6,7 @@ import coord.except.DivByZeroException;
 
 import static universe.Omega.GRAV;
 
-public class Planet implements Gravitable<Planet> {
+public class Planet {
 	private Vect2D position = new Vect2D();
 	private Vect2D vitesse = new Vect2D();
 	private int weigh;
@@ -72,18 +72,15 @@ public class Planet implements Gravitable<Planet> {
 	}
 	
 	@Override
-	public void mutualAttract(Planet p) {
+	public void mutualAttract(Planet p) throws DivByZeroException {
 		Vect2D dVect = null;
 
 		dVect = this.position.relativeDistTo(p.position);
 	
 		double hypo = Math.hypot(dVect.getX(),dVect.getY());
 		double invHypo = 1.0 / hypo;
-		double forceG = GRAV * invHypo;
-		
-		int directionX = (dVect.getX()) < 0 ? -1:1;
-		int directionY = (dVect.getY()) < 0 ? -1:1;
-		
+		double forceG = GRAV * invHypo * invHypo;
+
 		double selfXA = forceG * p.getWeigh() * dVect.getX() * invHypo;
 		double selfYA = forceG * p.getWeigh() * dVect.getY() * invHypo;
 		
@@ -107,6 +104,8 @@ public class Planet implements Gravitable<Planet> {
 		sb.append("position: "+position.toString()+" -- ");
 		return sb.toString();
 	}
+	
+	public void collFusion
 	
 	
 

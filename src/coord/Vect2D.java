@@ -36,11 +36,11 @@ public class Vect2D {
 		this.y -= vect.getY();
 	}
 	
-	public Vect2D relativeDistTo(Vect2D vect) {
+	public Vect2D relativeDistTo(Vect2D vect) throws DivByZeroException {
 		double distX = vect.getX()-this.x;
 		double distY = vect.getY() - this.y;
 		
-	
+		if (distX == 0 && distY == 0) throw new DivByZeroException();
 		Vect2D res = new Vect2D(distX,distY);
 		return res;
 	}
@@ -71,7 +71,6 @@ public class Vect2D {
 	public double hypoSquared(Vect2D vect) throws DivByZeroException {
 		Vect2D temp;
 		temp = this.relativeDistTo(vect);
-
 		double tempX = temp.getX();
 		double tempY = temp.getY();		
 		return tempX*tempX + tempY*tempY;
