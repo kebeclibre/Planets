@@ -1,6 +1,6 @@
 package coord;
 
-import coord.except.DivByZeroException;
+import coord.except.BodyCollisionException;
 
 public class Vect2D {
 	private double x;
@@ -31,16 +31,23 @@ public class Vect2D {
 		this.y += accel.y;
 	}
 	
+	public static Vect2D addVectStat(Vect2D vect1, Vect2D vect2) {
+		vect1.addVectAccel(vect2);
+		return vect2;
+	}
+	
 	public void substractVect(Vect2D vect) {
 		this.x -= vect.getX();
 		this.y -= vect.getY();
 	}
 	
-	public Vect2D relativeDistTo(Vect2D vect) throws DivByZeroException {
-		double distX = vect.getX()-this.x;
+	public Vect2D relativeDistTo(Vect2D vect) throws BodyCollisionException {
+		double rangeFusion = 0.1;
+		double distX = vect.getX() - this.x;
 		double distY = vect.getY() - this.y;
 		
-		if (distX == 0 && distY == 0) throw new DivByZeroException();
+		if ((distX <= rangeFusion && distX >= -rangeFusion) && (distY <= rangeFusion && distY >= -rangeFusion)) 
+		{ throw new BodyCollisionException(); }
 		Vect2D res = new Vect2D(distX,distY);
 		return res;
 	}
@@ -63,12 +70,12 @@ public class Vect2D {
 	public double hypothenuse(Vect2D vect) {	
 		try {
 			return Math.sqrt(hypoSquared(vect));
-		} catch (DivByZeroException e) {
+		} catch (BodyCollisionException e) {
 			return 0;
 		}
 	}
 	
-	public double hypoSquared(Vect2D vect) throws DivByZeroException {
+	public double hypoSquared(Vect2D vect) throws BodyCollisionException {
 		Vect2D temp;
 		temp = this.relativeDistTo(vect);
 		double tempX = temp.getX();

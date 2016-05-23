@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.Vector;
 
 import astre.Planet;
-import coord.except.DivByZeroException;
+import coord.except.BodyCollisionException;
 
 public class Omega extends Thread {
 	public static final double GRAV = 6.6E-11;
@@ -19,14 +19,20 @@ public class Omega extends Thread {
 	public void run() {
 		while (true) {
 		Iterator<Planet> it = planets.iterator();
-		Planet prev = it.next();
-		Planet current = it.next();
+
 		while (it.hasNext()) {
-			try {
-				prev.mutualAttract(current);
-			} catch (DivByZeroException e1) {
+				Planet first = it.next();
+				Planet second = null;
+				if (it.hasNext()) {
+					second = it.next();
+					first.mutualAttract(second);
+					cleanZeroWeigh(second, it);
+				}
 				
-			}
+				System.out.println(first);
+				System.out.println(second);
+				
+
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
@@ -35,9 +41,14 @@ public class Omega extends Thread {
 			}
 			
 		}
-		System.out.println(planets.toString());
+		//System.out.println(planets.toString());
 		}
 	}
 			
+	public <T extends Planet> void cleanZeroWeigh(T second,Iterator it) {
+		if (second.getWeigh() == 0) {
+			it.remove();
+		}
+	}
 }
 	

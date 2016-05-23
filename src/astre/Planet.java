@@ -1,8 +1,7 @@
 package astre;
 
-import astre.iface.Gravitable;
 import coord.Vect2D;
-import coord.except.DivByZeroException;
+import coord.except.BodyCollisionException;
 
 import static universe.Omega.GRAV;
 
@@ -18,6 +17,11 @@ public class Planet {
 	public Planet(int weigh, double x, double y) {
 		this.weigh = weigh;
 		this.setPosition(x, y);
+	}
+	
+	public Planet(int weigh, double x, double y, Vect2D speed) {
+		this(weigh,x,y);
+		this.setVitesse(speed);
 	}
 	
 	public Vect2D getPosition() {
@@ -71,30 +75,51 @@ public class Planet {
 		this.vitesse.addVectAccel(accel);
 	}
 	
-	@Override
-	public void mutualAttract(Planet p) throws DivByZeroException {
+	public void mutualAttract(Planet p) {
 		Vect2D dVect = null;
 
-		dVect = this.position.relativeDistTo(p.position);
+		try {
+			dVect = this.position.relativeDistTo(p.position);
+			double hypo = Math.hypot(dVect.getX(),dVect.getY());
+			double invHypo = 1.0 / hypo;
+			double forceG = GRAV * invHypo * invHypo;
+			
+			double selfXA = 0;
+			double selfYA = 0;
+			double otherXA = 0; 
+			double otherYA = 0;
+			
+			if (dVect.getX() > 0 ) {
+				selfXA = forceG * p.getWeigh() * dVect.getX() * invHypo;
+				otherXA = - forceG * this.getWeigh()* dVect.getX() * invHypo;
+			} else {
+				selfXA = - forceG * p.getWeigh() * dVect.getX() * invHypo;
+				otherXA = forceG * this.getWeigh()* dVect.getX() * invHypo;
+			}
+			
+			if (dVect.getY() > 0) {
+				selfYA =  forceG * p.getWeigh() * dVect.getY() * invHypo;
+				otherYA = - forceG * this.getWeigh()* dVect.getY() * invHypo;
+			} else {
+				selfYA =  - forceG * p.getWeigh() * dVect.getY() * invHypo;
+				otherYA = forceG * this.getWeigh()* dVect.getY() * invHypo;
+			}
+				
+			this.accel = new Vect2D(selfXA,selfYA);
+			p.accel = new Vect2D(otherXA,otherYA);
+		
+			this.updateVitess();
+			this.updatePosition();
+		
+			p.updateVitess();
+			p.updatePosition();
+			
+			
+		} catch (BodyCollisionException e) {
+			collFusion(this, p);
+			System.out.println("Except");
+		}
 	
-		double hypo = Math.hypot(dVect.getX(),dVect.getY());
-		double invHypo = 1.0 / hypo;
-		double forceG = GRAV * invHypo * invHypo;
-
-		double selfXA = forceG * p.getWeigh() * dVect.getX() * invHypo;
-		double selfYA = forceG * p.getWeigh() * dVect.getY() * invHypo;
-		
-		double otherXA = - forceG * this.getWeigh()* dVect.getX() * invHypo;
-		double otherYA = - forceG * this.getWeigh()* dVect.getY() * invHypo;
-		
-		this.accel = new Vect2D(selfXA,selfYA);
-		p.accel = new Vect2D(otherXA,otherYA);
-		
-		this.updateVitess();
-		this.updatePosition();
-		
-		p.updateVitess();
-		p.updatePosition();
 	}
 	
 	public String toString() {
@@ -105,8 +130,10 @@ public class Planet {
 		return sb.toString();
 	}
 	
-	public void collFusion
-	
-	
+	public static <T extends Planet> void collFusion(T corps1,T corps2) {
+		corps1.setVitesse(Vect2D.addVectStat(corps1.getVitesse(), corps2.getVitesse()));
+		corps1.setWeigh(corps2.getWeigh()+corps1.getWeigh());
+		corps2.setWeigh(0);
+	}
 
 }
