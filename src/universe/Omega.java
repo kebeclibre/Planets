@@ -2,24 +2,43 @@ package universe;
 
 
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Vector;
 
 import astre.Planet;
-import coord.except.BodyCollisionException;
 
-public class Omega extends Thread {
+public class Omega {
+	
+	private static Omega instance;
 	public static final double GRAV = 6.6E-11;
 	private double size;
 	private Vector<Planet> planets = new Vector<Planet>();
-	public void addPlanet(Planet p){
+	private boolean marching = true;
+	
+
+	public static Omega getInstance() {
+		if (instance == null) {
+			return instance = new Omega();
+		} else {
+			return instance;
+		}
+	}
+	
+	public void setMarching(boolean march) {
+		this.marching = march;
+	}
+	
+	public synchronized void addPlanet(Planet p){
 		this.planets.add(p);
 	}
-	@Override
-	public void run() {
-		while (true) {
-		Iterator<Planet> it = planets.iterator();
+	
+	public Vector<Planet> getPlanets() {
+		return this.planets;
+	}
 
+	public synchronized void launch() {
+		while (marching) {
+		Iterator<Planet> it = planets.iterator();
+		
 		while (it.hasNext()) {
 				Planet first = it.next();
 				Planet second = null;
@@ -27,25 +46,23 @@ public class Omega extends Thread {
 					second = it.next();
 					first.mutualAttract(second);
 					cleanZeroWeigh(second, it);
+					Thread.yield();
 				}
-				
+				try {
+					Thread.sleep(200);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				System.out.println(first);
 				System.out.println(second);
-				
-
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			
 		}
-		//System.out.println(planets.toString());
+		Thread.yield();
 		}
 	}
 			
-	public <T extends Planet> void cleanZeroWeigh(T second,Iterator it) {
+	private <T extends Planet> void cleanZeroWeigh(T second,Iterator<T> it) {
 		if (second.getWeigh() == 0) {
 			it.remove();
 		}

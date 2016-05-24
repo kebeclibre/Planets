@@ -75,7 +75,7 @@ public class Planet {
 		this.vitesse.addVectAccel(accel);
 	}
 	
-	public void mutualAttract(Planet p) {
+	public synchronized void mutualAttract(Planet p) {
 		Vect2D dVect = null;
 
 		try {
