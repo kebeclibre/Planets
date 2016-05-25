@@ -1,5 +1,7 @@
 package disp;
 
+import java.util.Date;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -13,14 +15,14 @@ public class MyFrame extends JFrame {
 	public MyFrame() {
 		setPlanets();
 		this.setTitle("Ma première fenêtre Java");
-		this.setSize(600, 600);
+		this.setSize(1000, 600);
 		this.setLocationRelativeTo(null);
 
 		
 		this.setVisible(true);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setContentPane(pan);
-		pan.setSize(100,100);
+		pan.setSize(1000,600);
 	
 		
 		
@@ -49,12 +51,15 @@ public class MyFrame extends JFrame {
 	}
 	
 	private void go() {
+		Date now = new Date();
 		while (true) {
-			Planet p = o.getPlanets().get(0);
-			Vect2D pos = p.getPosition();
-			pan.setX((int)pos.getX()+25);
-			pan.setY(-(int)pos.getY()+25);
-			pan.repaint();
+			Date then = new Date();
+			if (now.getTime()-then.getTime() >= 100) {
+				pan.repaint(); 
+				Thread.yield();
+				now = new Date();
+			}
+			
 		}
 		/*for (Planet p : o.getPlanets()) {
 			

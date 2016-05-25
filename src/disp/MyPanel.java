@@ -1,7 +1,15 @@
 package disp;
 
 import javax.swing.JPanel;
+
+import astre.Planet;
+import coord.Vect2D;
+import universe.Omega;
+
+import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.geom.Ellipse2D;
 
 public class MyPanel extends JPanel {
 
@@ -34,16 +42,22 @@ public class MyPanel extends JPanel {
 
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		g.fillOval(x, y, 30, 30);
+		Graphics2D g2 = (Graphics2D) g;
 		
+		
+		for (Planet p : Omega.getInstance().getPlanets()) {
+			int fact = 5;
+			Ellipse2D object = new Ellipse2D.Double();
+			Vect2D pos = p.getPosition();
 			
-	}
-	
-	
-		
-	public MyPanel() {
-		this.setSize(50,50);
-
+			object.setFrameFromCenter(
+		            pos.getX()*fact+300,
+		            -pos.getY()*fact+100,
+		            pos.getX()*fact+10+300,
+		            -pos.getY()*fact+100+10);
+		        g2.setColor(Color.BLUE);
+		        g2.fill(object);
+		}
 	}
 	
 

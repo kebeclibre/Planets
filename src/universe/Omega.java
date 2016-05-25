@@ -9,7 +9,8 @@ import astre.Planet;
 public class Omega {
 	
 	private static Omega instance;
-	public static final double GRAV = 6.6E-11;
+	public static final double GRAV = 10E-10;
+	// 6.6E-11;
 	private double size;
 	private Vector<Planet> planets = new Vector<Planet>();
 	private boolean marching = true;
@@ -36,7 +37,9 @@ public class Omega {
 	}
 
 	public synchronized void launch() {
+		
 		while (marching) {
+			
 		Iterator<Planet> it = planets.iterator();
 		
 		while (it.hasNext()) {
@@ -46,6 +49,7 @@ public class Omega {
 					second = it.next();
 					first.mutualAttract(second);
 					cleanZeroWeigh(second, it);
+					notifyAll();
 					Thread.yield();
 				}
 				try {
@@ -56,6 +60,7 @@ public class Omega {
 				}
 				System.out.println(first);
 				System.out.println(second);
+				Thread.yield();
 			
 		}
 		Thread.yield();
