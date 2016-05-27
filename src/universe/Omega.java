@@ -1,6 +1,7 @@
 package universe;
 
 
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -14,6 +15,7 @@ public class Omega {
 	private double size;
 	private Vector<Planet> planets = new Vector<Planet>();
 	private boolean marching = true;
+	private boolean ready = true;
 	
 
 	public static Omega getInstance() {
@@ -22,6 +24,13 @@ public class Omega {
 		} else {
 			return instance;
 		}
+	}
+	public void turnToNotReady() {
+		this.ready = false;
+	}
+	
+	public boolean isReady() {
+		return ready;
 	}
 	
 	public void setMarching(boolean march) {
@@ -33,37 +42,28 @@ public class Omega {
 	}
 	
 	public Vector<Planet> getPlanets() {
-		return this.planets;
+		return planets;
+	}
+	
+	public void updateState() {
+		for (Planet p : planets) {
+			p.updateVitess();
+			p.updatePosition();
+		}
 	}
 
-	public synchronized void launch() {
-		
+	public void launch() {
+		//Date now = new Date();
 		while (marching) {
-			
-		Iterator<Planet> it = planets.iterator();
-		
-		while (it.hasNext()) {
-				Planet first = it.next();
-				Planet second = null;
-				if (it.hasNext()) {
-					second = it.next();
-					first.mutualAttract(second);
-					cleanZeroWeigh(second, it);
-					notifyAll();
-					Thread.yield();
+			//Date then = new Date();
+			if (ready) {
+				for (int i = 0; i<planets.size();i++) {
+					for (int j = 1;j<planets.size();j++) {
+					planets.get(i).mutualAttract(planets.get(j));
+					Thread.yield();				
+					}
 				}
-				try {
-					Thread.sleep(200);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				System.out.println(first);
-				System.out.println(second);
-				Thread.yield();
-			
-		}
-		Thread.yield();
+			} 
 		}
 	}
 			

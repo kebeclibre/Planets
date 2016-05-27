@@ -11,8 +11,15 @@ public class Planet {
 	private int weigh;
 	private int radius;
 	private Vect2D accel = new Vect2D();
+	private boolean checked = false;
 	
+	public boolean isChecked() {
+		return checked;
+	}
 	
+	public void setCheck(boolean b) {
+		this.checked = b;
+	}
 	
 	public Planet(int weigh, double x, double y) {
 		this.weigh = weigh;
@@ -25,7 +32,18 @@ public class Planet {
 	}
 	
 	public Vect2D getPosition() {
-		return position;
+			synchronized (position) {
+				if (!checked) {
+					try {
+						position.wait();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			checked = false;
+			return position;
+			}
 	}
 	public void setPosition(Vect2D position) {
 		this.position = position;
@@ -67,7 +85,20 @@ public class Planet {
 		}
 	
 	public void updatePosition() {
+		synchronized (position) {
+		if (checked) {
+			try {
+				position.wait();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
 		this.position.addVectAccel(vitesse);
+		checked = true;
+		position.notifyAll();
+		}
 		
 	}
 	
@@ -75,7 +106,7 @@ public class Planet {
 		this.vitesse.addVectAccel(accel);
 	}
 	
-	public synchronized void mutualAttract(Planet p) {
+	public void mutualAttract(Planet p) {
 		Vect2D dVect = null;
 
 		try {

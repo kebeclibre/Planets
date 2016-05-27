@@ -43,9 +43,9 @@ public class MyPanel extends JPanel {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D) g;
-		
-		
-		for (Planet p : Omega.getInstance().getPlanets()) {
+		Omega o = Omega.getInstance();
+			
+		for (Planet p : o.getPlanets()) {
 			int fact = 5;
 			Ellipse2D object = new Ellipse2D.Double();
 			Vect2D pos = p.getPosition();
@@ -59,11 +59,10 @@ public class MyPanel extends JPanel {
 		        g2.fill(object);
 		}
 	}
-	
-
-	
-
 	}
+	
+
+	
 	
 	
 	

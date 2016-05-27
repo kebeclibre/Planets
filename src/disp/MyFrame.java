@@ -51,22 +51,17 @@ public class MyFrame extends JFrame {
 	}
 	
 	private void go() {
+
 		Date now = new Date();
 		while (true) {
 			Date then = new Date();
 			if (now.getTime()-then.getTime() >= 100) {
-				pan.repaint(); 
-				Thread.yield();
-				now = new Date();
-			}
-			
-		}
-		/*for (Planet p : o.getPlanets()) {
-			
-			
-			;
-		}
-		pan.repaint();}*/
-	}
 
+				pan.repaint(); 
+				now = then;
+			}
+		}
+	}
 }
+
+
