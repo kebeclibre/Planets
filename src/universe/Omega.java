@@ -47,7 +47,7 @@ public class Omega {
 	
 	public void updateState() {
 		for (Planet p : planets) {
-			p.updateVitess();
+			//p.updateVitess();
 			p.updatePosition();
 		}
 	}
@@ -63,6 +63,7 @@ public class Omega {
 					Thread.yield();				
 					}
 				}
+			updateState();
 			} 
 		}
 	}

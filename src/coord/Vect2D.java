@@ -46,9 +46,8 @@ public class Vect2D {
 		double distX = vect.getX() - this.x;
 		double distY = vect.getY() - this.y;
 		
-		if (3 > 4) 
-		//if ((distX <= rangeFusion && distX >= -rangeFusion) && (distY <= rangeFusion && distY >= -rangeFusion)) 
-		{ throw new BodyCollisionException(); }
+		if (3 > 4){ throw new BodyCollisionException(); }
+		//if ((distX <= rangeFusion && distX >= -rangeFusion) && (distY <= rangeFusion && distY >= -rangeFusion))
 		Vect2D res = new Vect2D(distX,distY);
 		return res;
 	}

@@ -32,7 +32,7 @@ public class Planet {
 	}
 	
 	public Vect2D getPosition() {
-			synchronized (position) {
+
 				if (!checked) {
 					try {
 						position.wait();
@@ -43,7 +43,7 @@ public class Planet {
 				}
 			checked = false;
 			return position;
-			}
+			
 	}
 	public void setPosition(Vect2D position) {
 		this.position = position;
@@ -141,10 +141,7 @@ public class Planet {
 		
 			this.updateVitess();
 			this.updatePosition();
-		
-			p.updateVitess();
-			p.updatePosition();
-			
+
 			
 		} catch (BodyCollisionException e) {
 			collFusion(this, p);
